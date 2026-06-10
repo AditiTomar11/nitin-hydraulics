@@ -23,7 +23,7 @@ export default function BlogPage() {
       <section className="py-16 bg-brand-steel/20 border-b steel-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <span className="text-brand-orange text-sm font-semibold uppercase tracking-widest">Blog</span>
-          <h1 className="text-4xl sm:text-5xl font-black text-white mt-2 mb-4">
+          <h1 className="text-4xl sm:text-5xl font-black text-black mt-2 mb-4">
             Industry <span className="text-gradient">Insights</span>
           </h1>
           <p className="text-brand-muted max-w-xl">
