@@ -124,7 +124,7 @@ export default function ProductsPage() {
             placeholder="Search products..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-           className="w-full bg-brand-steel/30 rounded-xl pl-11 pr-4 py-3 text-white placeholder-brand-muted text-sm outline-none transition-colors"
+           className="w-full bg-brand-steel/30 rounded-xl pl-11 pr-4 py-3 text-black placeholder-brand-muted text-sm outline-none transition-colors"
           />
         </div>
 
@@ -136,8 +136,8 @@ export default function ProductsPage() {
               onClick={() => setActiveCategory(cat)}
               className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
                 activeCategory === cat
-                  ? "bg-brand-orange text-white"
-                  : "bg-brand-steel/30 text-brand-muted hover:text-white steel-border"
+                  ? "bg-brand-orange text-black border border-brand-orange/30"
+                  : "bg-brand-steel/30 text-brand-muted hover:text-black steel-border"
               }`}
             >
               {cat}
@@ -162,7 +162,7 @@ export default function ProductsPage() {
 
               {/* Content */}
               <div className="p-5 flex flex-col flex-1">
-                <h3 className="text-white font-bold text-sm mb-2 leading-snug">{product.name}</h3>
+                <h3 className="!text-black font-bold text-sm mb-2 leading-snug">{product.name}</h3>
                 <p className="text-brand-muted text-xs leading-relaxed flex-1 mb-4">{product.desc}</p>
                 <div className="flex items-center justify-between">
                   <span className="text-brand-orange font-black">{product.price}</span>
