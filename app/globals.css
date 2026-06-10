@@ -1,26 +1,193 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-brand-dark: #0f172a;
+  --color-brand-navy: #1e293b;
+
+  --color-brand-orange: #f97316;
+  --color-brand-orange-dark: #ea580c;
+
+  --color-brand-light: #f8fafc;
+  --color-brand-muted: #64748b;
+  --color-brand-border: #e2e8f0;
+  --color-brand-white: #ffffff;
+
+  --font-sans: "Inter", sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ======================
+   Base Styles
+====================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+
+  background-color: var(--color-brand-white);
+  color: var(--color-brand-navy);
+  font-family: var(--font-sans);
+
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  text-decoration: none;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+/* ======================
+   Utility Classes
+====================== */
+
+.text-gradient {
+  background: linear-gradient(135deg, #f97316, #fbbf24);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.section-bg {
+  background-color: var(--color-brand-light);
+}
+
+.top-bar {
+  background-color: var(--color-brand-dark);
+  color: #cbd5e1;
+}
+
+/* Optional reusable container */
+.container-custom {
+  max-width: 80rem; /* 1280px */
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+
+@media (min-width: 640px) {
+  .container-custom {
+    padding-inline: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-custom {
+    padding-inline: 2rem;
+  }
+}
+
+/* ======================
+   Borders & Shadows
+====================== */
+
+.light-border {
+  border: 1px solid var(--color-brand-border);
+}
+
+.glow-orange {
+  box-shadow: 0 0 24px rgba(249, 115, 22, 0.25);
+}
+
+.card-shadow {
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.06),
+    0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.card-shadow-hover {
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.10),
+    0 16px 40px rgba(0, 0, 0, 0.08);
+}
+
+/* ======================
+   Buttons
+====================== */
+
+.orange-btn {
+  background-color: var(--color-brand-orange);
+  color: white;
+  font-weight: 700;
+
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.orange-btn:hover {
+  background-color: var(--color-brand-orange-dark);
+  transform: translateY(-1px);
+}
+
+.orange-btn:active {
+  transform: translateY(0);
+}
+
+.orange-btn:focus-visible {
+  outline: 2px solid var(--color-brand-orange);
+  outline-offset: 2px;
+}
+
+/* ======================
+   Footer Styles
+====================== */
+
+.footer-link {
+  color: #9ca3af;
+  transition:
+    color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.footer-link:hover {
+  color: var(--color-brand-orange);
+}
+
+.footer-social {
+  color: var(--color-brand-orange);
+  border: 1px solid rgba(249, 115, 22, 0.4);
+
+  transition:
+    all 0.3s ease;
+}
+
+.footer-social:hover {
+  background-color: var(--color-brand-orange);
+  color: white;
+  border-color: var(--color-brand-orange);
+
+  transform: translateY(-2px);
+}
+
+/* ======================
+   Focus Accessibility
+====================== */
+
+:focus-visible {
+  outline: 2px solid var(--color-brand-orange);
+  outline-offset: 2px;
 }
