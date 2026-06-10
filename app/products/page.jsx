@@ -57,7 +57,7 @@ const products = [
     price: "₹45,000",
     tag: "Efficient",
     category: "Mixing",
-    desc: "31\" drum, 3HP motor, 35 RPM. 50-70kg capacity for fast accurate color mixing.",
+    desc: '31" drum, 3HP motor, 35 RPM. 50-70kg capacity for fast accurate color mixing.',
     image: "/images/products/color-mixer-machines-500x500.webp",
   },
   {
@@ -89,7 +89,7 @@ const tagColors = {
   "Value": "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
   "Essential": "bg-red-500/10 text-red-400 border-red-500/20",
   "Efficient": "bg-orange-500/10 text-orange-400 border-orange-500/20",
-  "Heavy Duty": "bg-gray-500/10 text-gray-400 border-gray-500/20",
+  "Heavy Duty": "bg-gray-500/10 text-gray-300 border-gray-500/20",
   "Bulk": "bg-teal-500/10 text-teal-400 border-teal-500/20",
 };
 
@@ -104,27 +104,33 @@ export default function ProductsPage() {
   });
 
   return (
-    <div className="min-h-screen">
-      {/* Hero */}
-      <section className="py-16 bg-brand-steel/20 border-b steel-border">
+    <div className="min-h-screen bg-[#0A0F1E]">
+      {/* Page Header */}
+      <section className="py-16 border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <span className="text-brand-orange text-sm font-semibold uppercase tracking-widest">Our Products</span>
-          <h1 className="text-4xl sm:text-5xl font-black text-black mt-2 mb-4">
-            Construction Machinery <span className="text-gradient">Catalog</span>
+          <span className="text-[#F97316] text-sm font-semibold uppercase tracking-widest">
+            Our Products
+          </span>
+          <h1 className="text-4xl sm:text-5xl font-black text-white mt-2 mb-4">
+            Construction Machinery{" "}
+            <span className="text-[#F97316]">Catalog</span>
           </h1>
+          <p className="text-[#94A3B8] max-w-xl">
+            Browse our complete range of hydraulic construction machinery. All products manufactured in-house and tested before dispatch.
+          </p>
         </div>
       </section>
 
       <section className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Search */}
         <div className="relative mb-6">
-          <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-muted" />
+          <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#94A3B8]" />
           <input
             type="text"
             placeholder="Search products..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-           className="w-full bg-brand-steel/30 rounded-xl pl-11 pr-4 py-3 text-black placeholder-brand-muted text-sm outline-none transition-colors"
+            className="w-full bg-[#1E2A3A] border border-white/10 rounded-xl pl-11 pr-4 py-3 text-white placeholder-[#94A3B8] text-sm outline-none focus:border-[#F97316]/40 transition-colors"
           />
         </div>
 
@@ -136,8 +142,8 @@ export default function ProductsPage() {
               onClick={() => setActiveCategory(cat)}
               className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
                 activeCategory === cat
-                  ? "bg-brand-orange text-black border border-brand-orange/30"
-                  : "bg-brand-steel/30 text-brand-muted hover:text-black steel-border"
+                  ? "bg-[#F97316] text-white"
+                  : "bg-[#1E2A3A] text-[#94A3B8] border border-white/10 hover:text-white"
               }`}
             >
               {cat}
@@ -153,22 +159,35 @@ export default function ProductsPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
-              className="bg-brand-steel/30 steel-border rounded-xl overflow-hidden hover:border-brand-orange/30 transition-all duration-300 group flex flex-col"
+              className="bg-[#1E2A3A] border border-white/10 rounded-xl overflow-hidden hover:border-[#F97316]/40 transition-all duration-300 group flex flex-col"
             >
               {/* Image */}
-             <div className="w-full h-36 bg-white rounded-lg mb-3 overflow-hidden flex items-center justify-center">
-             <Image src={product.image} alt={product.name} width={150} height={144} className="object-contain h-32 w-auto" />
-             </div>
+              <div className="w-full h-40 bg-white flex items-center justify-center overflow-hidden">
+                <Image
+                  src={product.image}
+                  alt={product.name}
+                  width={160}
+                  height={160}
+                  className="object-contain h-36 w-auto"
+                />
+              </div>
 
               {/* Content */}
               <div className="p-5 flex flex-col flex-1">
-                <h3 className="!text-black font-bold text-sm mb-2 leading-snug">{product.name}</h3>
-                <p className="text-brand-muted text-xs leading-relaxed flex-1 mb-4">{product.desc}</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-brand-orange font-black">{product.price}</span>
+                <span className={`self-start text-xs font-semibold px-2 py-0.5 rounded-full border mb-2 ${tagColors[product.tag]}`}>
+                  {product.tag}
+                </span>
+                <h3 className="text-white font-bold text-sm mb-2 leading-snug">
+                  {product.name}
+                </h3>
+                <p className="text-[#94A3B8] text-xs leading-relaxed flex-1 mb-4">
+                  {product.desc}
+                </p>
+                <div className="flex items-center justify-between mt-auto">
+                  <span className="text-[#F97316] font-black">{product.price}</span>
                   <Link
                     href={`/products/${product.slug}`}
-                    className="flex items-center gap-1 text-xs text-brand-muted hover:text-brand-orange transition-colors"
+                    className="flex items-center gap-1 text-xs text-[#94A3B8] hover:text-[#F97316] transition-colors"
                   >
                     View Details <ArrowRight size={12} />
                   </Link>
@@ -179,7 +198,7 @@ export default function ProductsPage() {
         </div>
 
         {filtered.length === 0 && (
-          <div className="text-center py-20 text-brand-muted">
+          <div className="text-center py-20 text-[#94A3B8]">
             No products found for &quot;{search}&quot;
           </div>
         )}
