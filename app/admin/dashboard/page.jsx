@@ -12,10 +12,12 @@ export default function AdminDashboard() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (status === "unauthenticated") router.push("/admin/login");
+useEffect(() => {
+    // ✅ Only redirect after loading is complete
+    if (status === "unauthenticated") {
+      router.push("/admin/login");
+    }
   }, [status, router]);
-
   useEffect(() => {
     if (status === "authenticated") {
       Promise.all([
