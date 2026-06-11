@@ -1,84 +1,10 @@
 "use client";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, Search } from "lucide-react";
-import { useState } from "react";
 
-const products = [
-  {
-    slug: "fly-ash-brick-machine",
-    name: "Fully Automatic Fly-Ash Brick Making Machine",
-    price: "₹15,80,000",
-    tag: "Best Seller",
-    category: "Brick Making",
-    desc: "Capacity 1500-2500 bricks/hour. Hydraulic pressure method. Automatic and manual grades available.",
-    image: "/images/products/fully-automatic-fly-ash-brick-making-machine-500x500.webp",
-  },
-  {
-    slug: "hydraulic-tile-press",
-    name: "D'Mold Hydraulic Tile Press",
-    price: "₹2,60,000",
-    tag: "Popular",
-    category: "Tile Making",
-    desc: "High quality tile press for marking, crimping, staking, flaring and embossing operations.",
-    image: "/images/products/hydrolic-tile-press.webp",
-  },
-  {
-    slug: "concrete-block-machine",
-    name: "Egg Laying Concrete Block Machine",
-    price: "₹2,15,000",
-    tag: "Reliable",
-    category: "Block Making",
-    desc: "Wheel-mounted hydraulic block machine. Lays blocks on concrete floor automatically.",
-    image: "/images/products/egg-laying-type-concrete-block-machine-500x500.webp",
-  },
-  {
-    slug: "concrete-mixer",
-    name: "Concrete Mixer Machine",
-    price: "₹68,000",
-    tag: "Value",
-    category: "Mixing",
-    desc: "1.5 bag capacity. 5HP motor. Tilting drum at 18-20 RPM. Robust MS chassis.",
-    image: "/images/products/hydraulic-concrete-mixer-machine-500x500.webp",
-  },
-  {
-    slug: "vibrator-table",
-    name: "Vibrator Table Machine",
-    price: "₹42,000",
-    tag: "Essential",
-    category: "Accessories",
-    desc: "10ft x 2.5ft table for pavers and chequered tiles. 2HP 3-phase motor.",
-    image: "/images/products/vibrator-table-machine.webp",
-  },
-  {
-    slug: "color-mixer",
-    name: "Color Mixer Machine",
-    price: "₹45,000",
-    tag: "Efficient",
-    category: "Mixing",
-    desc: '31" drum, 3HP motor, 35 RPM. 50-70kg capacity for fast accurate color mixing.',
-    image: "/images/products/color-mixer-machines-500x500.webp",
-  },
-  {
-    slug: "hydraulic-press",
-    name: "Hydraulic Press Machine",
-    price: "₹95,000",
-    tag: "Heavy Duty",
-    category: "Press",
-    desc: "Adjustable bed. 10 to 50 tonne capacity. 3 to 5 HP. Hand lever or foot switch operation.",
-    image: "/images/products/hydraulic-press.webp",
-  },
-  {
-    slug: "tile-molds",
-    name: "Chequered Tile Molds",
-    price: "₹80/piece",
-    tag: "Bulk",
-    category: "Molds",
-    desc: "PVC and plastic molds for chequered, interlocking, and wall tiles. 35+ variants available.",
-    image: "/images/products/interlocking-tiles-mold.webp",
-  },
-];
 
 const categories = ["All", "Brick Making", "Tile Making", "Block Making", "Mixing", "Press", "Molds", "Accessories"];
 
@@ -92,10 +18,26 @@ const tagColors = {
   "Heavy Duty": "bg-gray-500/10 text-gray-300 border-gray-500/20",
   "Bulk": "bg-teal-500/10 text-teal-400 border-teal-500/20",
 };
+useEffect(() => {
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch("/api/products");
+
+      const data = await res.json();
+
+      setProducts(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  fetchProducts();
+}, []);
 
 export default function ProductsPage() {
-  const [search, setSearch] = useState("");
-  const [activeCategory, setActiveCategory] = useState("All");
+const [products, setProducts] = useState([]);
+const [search, setSearch] = useState("");
+const [activeCategory, setActiveCategory] = useState("All");
 
   const filtered = products.filter((p) => {
     const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase());

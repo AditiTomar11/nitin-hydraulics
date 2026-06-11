@@ -2,22 +2,24 @@ import { connectDB } from "@/lib/mongodb";
 import Product from "@/models/Product";
 import { NextResponse } from "next/server";
 
-export async function GET() {
+export async function PUT(req, { params }) {
   try {
     await connectDB();
-    const products = await Product.find().sort({ createdAt: -1 });
-    return NextResponse.json({ success: true, products });
+    const { id } = await params;
+    const body = await req.json();
+    const product = await Product.findByIdAndUpdate(id, body, { new: true });
+    return NextResponse.json({ success: true, product });
   } catch (error) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
 
-export async function POST(req) {
+export async function DELETE(req, { params }) {
   try {
     await connectDB();
-    const body = await req.json();
-    const product = await Product.create(body);
-    return NextResponse.json({ success: true, product });
+    const { id } = await params;
+    await Product.findByIdAndDelete(id);
+    return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }

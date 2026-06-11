@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ArrowLeft, Phone, MessageCircle, CheckCircle, Package } from "lucide-react";
 import { notFound} from "next/navigation";
 import {use} from "react";
-import { products } from "@/middleware.backup";
+import { products } from "@/proxy";
 export default function ProductDetailPage({ params }) {
   const { slug } = use(params);
   const product = products.find((p) => p.slug === slug);
