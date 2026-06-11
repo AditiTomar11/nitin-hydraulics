@@ -18,26 +18,27 @@ const tagColors = {
   "Heavy Duty": "bg-gray-500/10 text-gray-300 border-gray-500/20",
   "Bulk": "bg-teal-500/10 text-teal-400 border-teal-500/20",
 };
-useEffect(() => {
-  const fetchProducts = async () => {
-    try {
-      const res = await fetch("/api/products");
-
-      const data = await res.json();
-
-      setProducts(data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  fetchProducts();
-}, []);
 
 export default function ProductsPage() {
 const [products, setProducts] = useState([]);
 const [search, setSearch] = useState("");
 const [activeCategory, setActiveCategory] = useState("All");
+
+ useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch("/api/products");
+        const data = await res.json();
+
+        // Adjust depending on your API response
+        setProducts(data.products || data);
+      } catch (error) {
+        console.error("Failed to fetch products:", error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const filtered = products.filter((p) => {
     const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase());
