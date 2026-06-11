@@ -3,7 +3,7 @@ import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Package, MessageSquare, LogOut, LayoutDashboard, ExternalLink } from "lucide-react";
+import { Package, MessageSquare, LogOut, LayoutDashboard, ExternalLink, KeyRound } from "lucide-react";
 
 export default function AdminDashboard() {
   const { data: session, status } = useSession();
@@ -11,13 +11,15 @@ export default function AdminDashboard() {
   const [inquiries, setInquiries] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showPasswordForm, setShowPasswordForm] = useState(false);
+  const [passwordForm, setPasswordForm] = useState({ current: "", newPass: "", confirm: "" });
+  const [passwordMsg, setPasswordMsg] = useState("");
+  const [passwordLoading, setPasswordLoading] = useState(false);
 
-useEffect(() => {
-    // ✅ Only redirect after loading is complete
-    if (status === "unauthenticated") {
-      router.push("/admin/login");
-    }
+  useEffect(() => {
+    if (status === "unauthenticated") router.push("/admin/login");
   }, [status, router]);
+
   useEffect(() => {
     if (status === "authenticated") {
       Promise.all([
@@ -30,6 +32,40 @@ useEffect(() => {
       });
     }
   }, [status]);
+
+  async function handlePasswordChange() {
+    if (passwordForm.newPass !== passwordForm.confirm) {
+      setPasswordMsg("New passwords don't match");
+      return;
+    }
+    if (passwordForm.newPass.length < 6) {
+      setPasswordMsg("Password must be at least 6 characters");
+      return;
+    }
+    setPasswordLoading(true);
+    setPasswordMsg("");
+    try {
+      const res = await fetch("/api/admin/change-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          currentPassword: passwordForm.current,
+          newPassword: passwordForm.newPass,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setPasswordMsg("✓ Password changed successfully!");
+        setPasswordForm({ current: "", newPass: "", confirm: "" });
+        setShowPasswordForm(false);
+      } else {
+        setPasswordMsg(data.error || "Something went wrong");
+      }
+    } catch {
+      setPasswordMsg("Network error. Try again.");
+    }
+    setPasswordLoading(false);
+  }
 
   if (status === "loading") return (
     <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "#0A0F1E" }}>
@@ -120,7 +156,7 @@ useEffect(() => {
 
           {/* Quick actions */}
           <div className="grid sm:grid-cols-2 gap-4 mb-8">
-            <Link href="/admin/products" className="rounded-xl p-6 border flex items-center gap-4 hover:border-[#F97316]/30 transition-all group" style={{ backgroundColor: "#1E2A3A", borderColor: "rgba(255,255,255,0.08)" }}>
+            <Link href="/admin/products" className="rounded-xl p-6 border flex items-center gap-4 hover:border-orange-500/30 transition-all" style={{ backgroundColor: "#1E2A3A", borderColor: "rgba(255,255,255,0.08)" }}>
               <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: "rgba(249,115,22,0.1)" }}>
                 <Package size={22} style={{ color: "#F97316" }} />
               </div>
@@ -129,7 +165,7 @@ useEffect(() => {
                 <p className="text-xs" style={{ color: "#94A3B8" }}>Add, edit or delete products</p>
               </div>
             </Link>
-            <Link href="/admin/inquiries" className="rounded-xl p-6 border flex items-center gap-4 hover:border-[#F97316]/30 transition-all group" style={{ backgroundColor: "#1E2A3A", borderColor: "rgba(255,255,255,0.08)" }}>
+            <Link href="/admin/inquiries" className="rounded-xl p-6 border flex items-center gap-4 hover:border-orange-500/30 transition-all" style={{ backgroundColor: "#1E2A3A", borderColor: "rgba(255,255,255,0.08)" }}>
               <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: "rgba(249,115,22,0.1)" }}>
                 <MessageSquare size={22} style={{ color: "#F97316" }} />
               </div>
@@ -141,7 +177,7 @@ useEffect(() => {
           </div>
 
           {/* Recent inquiries */}
-          <div className="rounded-xl border p-6" style={{ backgroundColor: "#1E2A3A", borderColor: "rgba(255,255,255,0.08)" }}>
+          <div className="rounded-xl border p-6 mb-6" style={{ backgroundColor: "#1E2A3A", borderColor: "rgba(255,255,255,0.08)" }}>
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-white font-bold">Recent Inquiries</h2>
               <Link href="/admin/inquiries" className="text-xs hover:underline" style={{ color: "#F97316" }}>View all</Link>
@@ -154,20 +190,81 @@ useEffect(() => {
               </div>
             ) : (
               <div className="space-y-3">
-                {inquiries.slice(0, 5).map((inq) => (
+                {inquiries.filter(i => i.status === "new").slice(0, 5).map((inq) => (
                   <div key={inq._id} className="flex items-center justify-between p-4 rounded-lg" style={{ backgroundColor: "rgba(10,15,30,0.4)" }}>
                     <div>
                       <p className="text-white text-sm font-semibold">{inq.name}</p>
                       <p className="text-xs" style={{ color: "#94A3B8" }}>{inq.product} • {inq.phone}</p>
                     </div>
-                    <span className="text-xs px-2 py-1 rounded-full" style={{
-                      backgroundColor: inq.status === "new" ? "rgba(249,115,22,0.1)" : "rgba(34,197,94,0.1)",
-                      color: inq.status === "new" ? "#F97316" : "#4ade80"
-                    }}>
-                      {inq.status}
+                    <span className="text-xs px-2 py-1 rounded-full" style={{ backgroundColor: "rgba(249,115,22,0.1)", color: "#F97316" }}>
+                      new
                     </span>
                   </div>
                 ))}
+                {inquiries.filter(i => i.status === "new").length === 0 && (
+                  <div className="text-center py-4 text-sm" style={{ color: "#94A3B8" }}>
+                    No new inquiries. All caught up!
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Change Password */}
+          <div className="rounded-xl border p-6" style={{ backgroundColor: "#1E2A3A", borderColor: "rgba(255,255,255,0.08)" }}>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: "rgba(249,115,22,0.1)" }}>
+                  <KeyRound size={18} style={{ color: "#F97316" }} />
+                </div>
+                <div>
+                  <h2 className="text-white font-bold">Change Password</h2>
+                  <p className="text-xs" style={{ color: "#94A3B8" }}>Update your admin login password</p>
+                </div>
+              </div>
+              <button
+                onClick={() => { setShowPasswordForm(!showPasswordForm); setPasswordMsg(""); }}
+                className="text-xs px-4 py-2 rounded-lg text-white font-semibold"
+                style={{ backgroundColor: showPasswordForm ? "rgba(239,68,68,0.15)" : "rgba(249,115,22,0.15)", border: showPasswordForm ? "1px solid rgba(239,68,68,0.3)" : "1px solid rgba(249,115,22,0.3)", color: showPasswordForm ? "#f87171" : "#F97316" }}
+              >
+                {showPasswordForm ? "Cancel" : "Change Password"}
+              </button>
+            </div>
+
+            {showPasswordForm && (
+              <div className="space-y-3 mt-4">
+                {[
+                  { key: "current", label: "Current Password", placeholder: "Enter current password" },
+                  { key: "newPass", label: "New Password", placeholder: "Min 6 characters" },
+                  { key: "confirm", label: "Confirm New Password", placeholder: "Repeat new password" },
+                ].map((field) => (
+                  <div key={field.key}>
+                    <label className="block text-xs font-medium mb-1.5" style={{ color: "#94A3B8" }}>{field.label}</label>
+                    <input
+                      type="password"
+                      placeholder={field.placeholder}
+                      value={passwordForm[field.key]}
+                      onChange={(e) => setPasswordForm({ ...passwordForm, [field.key]: e.target.value })}
+                      className="w-full rounded-lg px-4 py-2.5 text-white text-sm outline-none"
+                      style={{ backgroundColor: "rgba(10,15,30,0.6)", border: "1px solid rgba(255,255,255,0.08)" }}
+                    />
+                  </div>
+                ))}
+
+                {passwordMsg && (
+                  <p className="text-sm font-medium" style={{ color: passwordMsg.includes("✓") ? "#4ade80" : "#f87171" }}>
+                    {passwordMsg}
+                  </p>
+                )}
+
+                <button
+                  onClick={handlePasswordChange}
+                  disabled={passwordLoading}
+                  className="w-full py-3 rounded-lg text-white font-bold text-sm"
+                  style={{ backgroundColor: passwordLoading ? "rgba(249,115,22,0.5)" : "#F97316" }}
+                >
+                  {passwordLoading ? "Updating..." : "Update Password"}
+                </button>
               </div>
             )}
           </div>
