@@ -11,7 +11,7 @@ const navLinks = [
     label: "Products",
     href: "/products",
     children: [
-      { label: "Fly Ash Brick Machine", href: "/products/fly-ash-brick-machine" },
+      { label: "Fly Ash Brick Machine", href: "/products/fly-ash-brick-machines" },
       { label: "Hydraulic Tile Press", href: "/products/hydraulic-tile-press" },
       { label: "Concrete Block Machine", href: "/products/concrete-block-machine" },
       { label: "Concrete Mixer", href: "/products/concrete-mixer" },
